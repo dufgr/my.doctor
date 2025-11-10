@@ -9,14 +9,12 @@ import {
   PageTitle,
 } from "@/components/ui/page-container";
 import WithAuthentication from "@/hocs/with-authentication";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 
 import { SubscriptionPlan } from "./_components/subscription-plan";
 
 const SubscriptionPage = async () => {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSession(await headers());
 
   return (
     <WithAuthentication mustHaveClinic>
@@ -29,7 +27,7 @@ const SubscriptionPage = async () => {
         </PageHeader>
         <PageContent>
           <SubscriptionPlan
-            className="w-[350px]"
+            className="w-full max-w-[350px]"
             active={session!.user.plan === "essential"}
             userEmail={session!.user.email}
           />

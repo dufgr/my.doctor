@@ -1,14 +1,12 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 
 import { SubscriptionPlan } from "../(protected)/subscription/_components/subscription-plan";
 
 export default async function Home() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSession(await headers());
   if (!session) {
     redirect("/login");
   }

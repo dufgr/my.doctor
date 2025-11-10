@@ -1,10 +1,16 @@
 export const PageContainer = ({ children }: { children: React.ReactNode }) => {
-  return <div className="w-full space-y-6 p-6">{children}</div>;
+  return (
+    <div className="mx-auto w-full max-w-[1280px] space-y-6 p-4 sm:p-6">
+      {children}
+    </div>
+  );
 };
 
 export const PageHeader = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="flex w-full items-center justify-between">{children}</div>
+    <div className="flex w-full flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+      {children}
+    </div>
   );
 };
 
@@ -29,7 +35,7 @@ export const PageDescription = ({
 };
 
 export const PageActions = ({ children }: { children: React.ReactNode }) => {
-  return <div className="flex items-center gap-2">{children}</div>;
+  return <div className="flex w-full items-center gap-2 sm:w-auto">{children}</div>;
 };
 
 export const PageContent = ({ children }: { children: React.ReactNode }) => {

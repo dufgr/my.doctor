@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/page-container";
 import { getDashboard } from "@/data/get-dashboard";
 import WithAuthentication from "@/hocs/with-authentication";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 
 import { appointmentsTableColumns } from "../appointments/_components/table-columns";
 import AppointmentsChart from "./_components/appointments-chart";
@@ -33,9 +33,7 @@ interface DashboardPageProps {
 }
 
 const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSession(await headers());
   const { from, to } = await searchParams;
   if (!from || !to) {
     redirect(
@@ -86,11 +84,11 @@ const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
             totalPatients={totalPatients.total}
             totalDoctors={totalDoctors.total}
           />
-          <div className="grid grid-cols-[2.25fr_1fr] gap-4">
+          <div className="grid grid-cols-1 gap-4 xl:grid-cols-[2.25fr_1fr]">
             <AppointmentsChart dailyAppointmentsData={dailyAppointmentsData} />
             <TopDoctors doctors={topDoctors} />
           </div>
-          <div className="grid grid-cols-[2.25fr_1fr] gap-4">
+          <div className="grid grid-cols-1 gap-4 xl:grid-cols-[2.25fr_1fr]">
             <Card>
               <CardHeader>
                 <div className="flex items-center gap-3">

@@ -5,12 +5,10 @@ import { redirect } from "next/navigation";
 
 import { db } from "@/db";
 import { clinicsTable, usersToClinicsTable } from "@/db/schema";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 
 export const createClinic = async (name: string) => {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+    const session = await getSession(await headers());
   if (!session?.user) {
     throw new Error("Unauthorized");
   }

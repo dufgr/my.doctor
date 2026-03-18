@@ -1,12 +1,9 @@
-// Higher ORder Component
-// É um componente que recebe um componente e o renderiza
-// mas antes de renderizá-lo, executa alguma ação
-// ou, passa alguma prop extra pra esse componente
+// Checks session and account requirements before rendering protected content.
 
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 
 const WithAuthentication = async ({
   children,
@@ -17,9 +14,7 @@ const WithAuthentication = async ({
   mustHavePlan?: boolean;
   mustHaveClinic?: boolean;
 }) => {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSession(await headers());
   if (!session?.user) {
     redirect("/authentication");
   }

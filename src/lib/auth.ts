@@ -12,18 +12,26 @@ const FIVE_MINUTES = 5 * 60;
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
-    usePlural: true,
-    schema,
-  }),
-  socialProviders: {
-    google: {
-      clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    schema: {
+      ...schema,
+      user: usersTable,
+      session: schema.sessionsTable,
+      account: schema.accountsTable,
+      verification: schema.verificationsTable,
     },
-  },
+  }),
+  socialProviders:
+    process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
+      ? {
+          google: {
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+          },
+        }
+      : {},
   plugins: [
     customSession(async ({ user, session }) => {
-      // TODO: colocar cache
+      // TODO: Add caching after measuring session lookup frequency.
       const [userData, clinics] = await Promise.all([
         db.query.usersTable.findFirst({
           where: eq(usersTable.id, user.id),
@@ -36,7 +44,7 @@ export const auth = betterAuth({
           },
         }),
       ]);
-      // TODO: Ao adaptar para o usuário ter múltiplas clínicas, deve-se mudar esse código
+      // TODO: Revisit this selection when users can belong to multiple clinics.
       const clinic = clinics?.[0];
       return {
         user: {
@@ -54,7 +62,6 @@ export const auth = betterAuth({
     }),
   ],
   user: {
-    modelName: "usersTable",
     additionalFields: {
       stripeCustomerId: {
         type: "string",
@@ -78,13 +85,6 @@ export const auth = betterAuth({
       enabled: true,
       maxAge: FIVE_MINUTES,
     },
-    modelName: "sessionsTable",
-  },
-  account: {
-    modelName: "accountsTable",
-  },
-  verification: {
-    modelName: "verificationsTable",
   },
   emailAndPassword: {
     enabled: true,

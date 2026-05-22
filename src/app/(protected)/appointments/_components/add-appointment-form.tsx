@@ -105,7 +105,7 @@ const AddAppointmentForm = ({
     enabled: !!selectedDate && !!selectedDoctorId,
   });
 
-  // Atualizar o preço quando o médico for selecionado
+  // Update the appointment price when the selected doctor changes.
   useEffect(() => {
     if (selectedDoctorId) {
       const selectedDoctor = doctors.find(

@@ -30,7 +30,7 @@ interface AppointmentsChartProps {
 const AppointmentsChart = ({
   dailyAppointmentsData,
 }: AppointmentsChartProps) => {
-  // Gerar 21 dias: 10 antes + hoje + 10 depois
+  // Keep the chart centered on today, including days without appointments.
   const chartDays = Array.from({ length: 21 }).map((_, i) =>
     dayjs()
       .subtract(10 - i, "days")

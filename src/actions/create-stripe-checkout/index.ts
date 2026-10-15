@@ -3,13 +3,16 @@
 import Stripe from "stripe";
 
 import { protectedActionClient } from "@/lib/next-safe-action";
+import { isStripeBillingEnabled } from "@/lib/stripe-config";
 
 export const createStripeCheckout = protectedActionClient.action(
   async ({ ctx }) => {
-    if (!process.env.STRIPE_SECRET_KEY) {
-      throw new Error("Stripe secret key not found");
+    const secretKey = process.env.STRIPE_SECRET_KEY;
+    const priceId = process.env.STRIPE_ESSENTIAL_PLAN_PRICE_ID;
+    if (!isStripeBillingEnabled() || !secretKey || !priceId) {
+      throw new Error("Stripe billing is disabled");
     }
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+    const stripe = new Stripe(secretKey, {
       apiVersion: "2025-05-28.basil",
     });
     const { id: sessionId } = await stripe.checkout.sessions.create({
@@ -24,7 +27,7 @@ export const createStripeCheckout = protectedActionClient.action(
       },
       line_items: [
         {
-          price: process.env.STRIPE_ESSENTIAL_PLAN_PRICE_ID,
+          price: priceId,
           quantity: 1,
         },
       ],

@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/page-container";
 import WithAuthentication from "@/hocs/with-authentication";
 import { getSession } from "@/lib/session";
+import { isStripeBillingEnabled } from "@/lib/stripe-config";
 
 import { SubscriptionPlan } from "./_components/subscription-plan";
 
@@ -29,6 +30,7 @@ const SubscriptionPage = async () => {
           <SubscriptionPlan
             className="w-full max-w-[350px]"
             active={session!.user.plan === "essential"}
+            billingEnabled={isStripeBillingEnabled()}
             userEmail={session!.user.email}
           />
         </PageContent>

@@ -13,7 +13,7 @@ Screenshots and a live demo will be added here.
 - Patient records and appointment scheduling
 - Responsive tables, forms, and navigation for desktop, tablet, and mobile
 - Email/password authentication, with Google OAuth available when configured
-- Stripe subscription checkout and customer portal integration
+- Optional Stripe subscription checkout and customer portal integration
 
 ## Tech Stack
 
@@ -85,7 +85,7 @@ Protected routes and server actions verify the current session and clinic before
 
 7. Open `http://localhost:3000`. With `LOCAL_AUTH_BYPASS=true`, the local demo user is signed in automatically and Google credentials are not required. Set the flag to `false` to test email/password registration and login instead. The bypass is disabled whenever `NODE_ENV=production`.
 
-The example environment file contains local PostgreSQL settings. Stripe checkout and Google OAuth require their respective credentials; they are not needed for local email/password authentication.
+The example environment file contains local PostgreSQL settings. Stripe billing stays disabled unless `STRIPE_ENABLED=true` and all Stripe credentials are configured; without billing, authenticated users receive demo access. Google OAuth requires its client ID and secret; these are not needed for local email/password authentication.
 
 ## Validation
 

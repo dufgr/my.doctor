@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import * as schema from "@/db/schema";
 import { usersTable, usersToClinicsTable } from "@/db/schema";
+import { isStripeBillingEnabled } from "@/lib/stripe-config";
 
 const FIVE_MINUTES = 5 * 60;
 
@@ -49,7 +50,8 @@ export const auth = betterAuth({
       return {
         user: {
           ...user,
-          plan: userData?.plan,
+          // Keep demo accounts usable when billing is not configured.
+          plan: userData?.plan ?? (isStripeBillingEnabled() ? undefined : "essential"),
           clinic: clinic?.clinicId
             ? {
                 id: clinic?.clinicId,

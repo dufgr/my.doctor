@@ -12,12 +12,14 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 interface SubscriptionPlanProps {
   active?: boolean;
+  billingEnabled: boolean;
   className?: string;
   userEmail: string;
 }
 
 export function SubscriptionPlan({
   active = false,
+  billingEnabled,
   className,
   userEmail,
 }: SubscriptionPlanProps) {
@@ -75,8 +77,10 @@ export function SubscriptionPlan({
           Para profissionais autônomos ou pequenas clínicas
         </p>
         <div className="flex items-baseline">
-          <span className="text-3xl font-bold text-gray-900">R$59</span>
-          <span className="ml-1 text-gray-600">/ mês</span>
+          <span className="text-3xl font-bold text-gray-900">
+            {billingEnabled ? "R$59" : "Gratuito"}
+          </span>
+          {billingEnabled && <span className="ml-1 text-gray-600">/ mês</span>}
         </div>
       </CardHeader>
 
@@ -97,9 +101,11 @@ export function SubscriptionPlan({
             className="w-full"
             variant="outline"
             onClick={active ? handleManagePlanClick : handleSubscribeClick}
-            disabled={createStripeCheckoutAction.isExecuting}
+            disabled={!billingEnabled || createStripeCheckoutAction.isExecuting}
           >
-            {createStripeCheckoutAction.isExecuting ? (
+            {!billingEnabled ? (
+              "Cobrança desativada para demonstração"
+            ) : createStripeCheckoutAction.isExecuting ? (
               <Loader2 className="mr-1 h-4 w-4 animate-spin" />
             ) : active ? (
               "Gerenciar assinatura"

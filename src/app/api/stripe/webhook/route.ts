@@ -4,23 +4,26 @@ import Stripe from "stripe";
 
 import { db } from "@/db";
 import { usersTable } from "@/db/schema";
+import { isStripeBillingEnabled } from "@/lib/stripe-config";
 
 export const POST = async (request: Request) => {
-  if (!process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_WEBHOOK_SECRET) {
-    throw new Error("Stripe secret key not found");
+  const secretKey = process.env.STRIPE_SECRET_KEY;
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  if (!isStripeBillingEnabled() || !secretKey || !webhookSecret) {
+    return new NextResponse("Stripe billing is disabled", { status: 404 });
   }
   const signature = request.headers.get("stripe-signature");
   if (!signature) {
     throw new Error("Stripe signature not found");
   }
   const text = await request.text();
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  const stripe = new Stripe(secretKey, {
     apiVersion: "2025-05-28.basil",
   });
   const event = stripe.webhooks.constructEvent(
     text,
     signature,
-    process.env.STRIPE_WEBHOOK_SECRET,
+    webhookSecret,
   );
 
   switch (event.type) {

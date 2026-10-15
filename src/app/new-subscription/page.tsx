@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { getSession } from "@/lib/session";
+import { isStripeBillingEnabled } from "@/lib/stripe-config";
 
 import { SubscriptionPlan } from "../(protected)/subscription/_components/subscription-plan";
 
@@ -35,7 +36,10 @@ export default async function Home() {
       </div>
 
       <div className="w-full max-w-md">
-        <SubscriptionPlan userEmail={session.user.email} />
+        <SubscriptionPlan
+          billingEnabled={isStripeBillingEnabled()}
+          userEmail={session.user.email}
+        />
       </div>
 
       <div className="mt-8 max-w-lg text-center">

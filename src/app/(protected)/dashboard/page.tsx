@@ -34,6 +34,14 @@ interface DashboardPageProps {
 
 const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
   const session = await getSession(await headers());
+  if (!session?.user) {
+    redirect("/authentication");
+  }
+  // Send new accounts through clinic setup before running clinic-scoped queries.
+  if (!session.user.clinic?.id) {
+    redirect("/clinic-form");
+  }
+
   const { from, to } = await searchParams;
   if (!from || !to) {
     redirect(
@@ -55,7 +63,7 @@ const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
     session: {
       user: {
         clinic: {
-          id: session!.user.clinic!.id,
+          id: session.user.clinic.id,
         },
       },
     },
